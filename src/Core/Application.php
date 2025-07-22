@@ -19,7 +19,7 @@ class Application
     {
         try {
             $method = $_SERVER['REQUEST_METHOD'];
-            $uri = $this->stripPublicPrefix($_SERVER['REQUEST_URI']);
+            $uri = $this->normalizeUri($_SERVER['REQUEST_URI']);
 
             if (!$this->router) {
                 throw new \Exception("Router not configured");
@@ -38,4 +38,19 @@ class Application
         $publicPath = str_replace($this->rootPath, '', $this->rootPath . '/public');
         return preg_replace("#^{$publicPath}#", '', $uri) ?: '/';
     }
+
+        protected function normalizeUri(string $uri): string
+    {
+        // Удаляем базовый путь из APP_URL
+        $basePath = parse_url($_ENV['APP_URL'], PHP_URL_PATH) ?: '';
+        $uri = parse_url($uri, PHP_URL_PATH);
+        
+        // Удаляем /public, если есть
+        $publicPath = str_replace($this->rootPath, '', $this->rootPath . '/public');
+        $uri = preg_replace("#^{$publicPath}#", '', $uri) ?: '/';
+        
+        // Удаляем базовый путь APP_URL
+        return preg_replace("#^{$basePath}#", '', $uri) ?: '/';
+    }
+
 }

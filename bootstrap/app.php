@@ -3,18 +3,18 @@ declare(strict_types=1);
 
 use Core\Application;
 use Core\Router;
+use Dotenv\Dotenv;
+use App\Controllers\HomeController;
+
+$dotenv = Dotenv::createImmutable(dirname(__DIR__));
+$dotenv->load();
 
 $app = new Application(dirname(__DIR__));
 
 $router = new Router();
 
-// Тестовые маршруты (будут работать относительно `/public`)
-$router->get('/', function () {
-    echo "Home Page (URL: /)";
-});
+$router->get('/', [HomeController::class, 'index']);
 
-$router->get('/about', function () {
-    echo "About Page (URL: /about)";
-});
+$router->get('/about', [HomeController::class, 'about']);
 
 $app->setRouter($router);

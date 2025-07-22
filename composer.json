@@ -4,7 +4,8 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Core\\": "src/Core/"
+            "Core\\": "src/Core/",
+            "App\\Controllers\\": "src/Controllers/"
         }
     },
     "authors": [
@@ -14,6 +15,7 @@
         }
     ],
     "require": {
-        "php": ">=8.3"
+        "php": ">=8.3",
+        "vlucas/phpdotenv": "^5.6"
     }
 }
