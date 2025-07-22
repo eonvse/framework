@@ -14,12 +14,14 @@ abstract class Controller
     
     protected function render(string $view, array $data = []): void
     {
-        $path = $this->app->getViewsPath() . "/pages/{$view}.latte";
-        if (!file_exists($path)) {
-            throw new \Exception("Template not found: {$path}");
+        try {
+            $latte = new LatteEngine($this->app->getViewsPath());
+            // Убедимся, что $core передается
+            $data['core'] = $latte;
+            echo $latte->render("pages/{$view}.latte", $data);
+        } catch (\Exception $e) {
+            throw new \Exception("Template rendering failed: " . $e->getMessage());
         }
-        $latte = new LatteEngine($this->app->getViewsPath());
-        echo $latte->render("pages/{$view}.latte", $data);
     }
 
     protected function component(string $name, array $props = []): string

@@ -20,7 +20,17 @@ class LatteEngine
 
         // Регистрация компонентов
         $this->latte->addProvider('core', $this);
+
+        // Регистрируем стандартные фильтры
+        $this->latte->addFilter('default', function($value, $default = '') {
+            return $value ?? $default;
+        });
+
+        // Другие полезные фильтры
         $this->latte->addFilter('ucfirst', 'ucfirst');
+        $this->latte->addFilter('date', function($timestamp, $format = 'Y-m-d') {
+            return date($format, is_numeric($timestamp) ? $timestamp : strtotime($timestamp));
+        });
     }
 
     public function render(string $path, array $params = []): string

@@ -11,13 +11,17 @@ class HomeController extends Controller
     {
         $this->render('home', [
             'title' => 'Главная страница',
-            'showButton' => true
+            'activePage' => 'home'
         ]);
 
     }
 
     public function about(): void
     {
-        $this->json(['message' => 'About Page']);
+        $this->render('home', [
+            'title' => 'About',
+            'activePage' => 'about'
+        ]);
+
     }
 }

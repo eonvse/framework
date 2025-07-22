@@ -1,12 +1,15 @@
 {layout '../layouts/default.latte'}
-
-{import '../components/button.latte'}
-
-{block title}Homepage{/block}
+{import ../components/button.latte}
+{block title}Главная страница{/block}
 
 {block content}
-    <h1>Welcome</h1>
-    {include button, 'Тестовая кнопка'}
-    {include button, 'Вторая кнопка', 'secondary' }
-    {$showButton}
+    <div class="row">
+        <div class="col-md-6">
+            <h1>Welcome</h1>
+            {include button, 'Тестовая кнопка'}
+            {include button, 'Вторая кнопка', 'secondary' }
+
+        </div>
+    </div>
+        
 {/block}
