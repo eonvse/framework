@@ -8,7 +8,21 @@ class Application
     public function __construct(
         protected string $rootPath,
         protected ?Router $router = null
-    ) {}
+    ){
+        $this->setupPaths();
+        $this->router = $this->router ?? new Router($this);
+    }
+
+    protected function setupPaths(): void
+    {
+        define('TEMPLATES_PATH', $this->rootPath . '/views');
+        define('STORAGE_PATH', $this->rootPath . '/storage');
+    }
+
+    public function getViewsPath(): string
+    {
+        return TEMPLATES_PATH;
+    }
 
     public function setRouter(Router $router): void
     {

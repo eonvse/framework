@@ -5,7 +5,7 @@
     "autoload": {
         "psr-4": {
             "Core\\": "src/Core/",
-            "App\\Controllers\\": "src/Controllers/"
+            "App\\": "src/"
         }
     },
     "authors": [
@@ -16,6 +16,7 @@
     ],
     "require": {
         "php": ">=8.3",
-        "vlucas/phpdotenv": "^5.6"
+        "vlucas/phpdotenv": "^5.6",
+        "latte/latte": "^3.0"
     }
 }

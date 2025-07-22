@@ -7,6 +7,10 @@ class Router
 {
     protected array $routes = [];
 
+    public function __construct(
+        protected Application $app
+    ) {}
+
     public function add(string $method, string $uri, callable|array $action): self
     {
         $this->routes[] = [
@@ -45,9 +49,11 @@ class Router
         }
 
         if (is_array($action) && count($action) === 2) {
-            [$controller, $method] = $action;
-            if (class_exists($controller) && method_exists($controller, $method)) {
-                return (new $controller)->{$method}();
+            [$controllerClass, $method] = $action;
+            
+            if (class_exists($controllerClass) && method_exists($controllerClass, $method)) {
+                $controller = new $controllerClass($this->app); // Передаем app в контроллер
+                return $controller->{$method}();
             }
         }
 

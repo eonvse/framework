@@ -9,7 +9,11 @@ class HomeController extends Controller
 {
     public function index(): void
     {
-        $this->view('home', ['title' => 'Главная страница']);
+        $this->render('home', [
+            'title' => 'Главная страница',
+            'showButton' => true
+        ]);
+
     }
 
     public function about(): void

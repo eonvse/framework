@@ -5,10 +5,27 @@ namespace Core;
 
 abstract class Controller
 {
-    protected function view(string $view, array $data = []): void
+    protected Application $app;
+
+    public function __construct(Application $app)
     {
-        extract($data);
-        require __DIR__ . "/../../views/{$view}.php";
+        $this->app = $app;
+    }
+    
+    protected function render(string $view, array $data = []): void
+    {
+        $path = $this->app->getViewsPath() . "/pages/{$view}.latte";
+        if (!file_exists($path)) {
+            throw new \Exception("Template not found: {$path}");
+        }
+        $latte = new LatteEngine($this->app->getViewsPath());
+        echo $latte->render("pages/{$view}.latte", $data);
+    }
+
+    protected function component(string $name, array $props = []): string
+    {
+        $latte = new LatteEngine($this->app->getViewsPath());
+        return $latte->render("components/{$name}.latte", $props);
     }
 
     protected function json(array $data, int $status = 200): void

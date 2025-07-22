@@ -1,0 +1,12 @@
+{layout '../layouts/default.latte'}
+
+{import '../components/button.latte'}
+
+{block title}Homepage{/block}
+
+{block content}
+    <h1>Welcome</h1>
+    {include button, 'Тестовая кнопка'}
+    {include button, 'Вторая кнопка', 'secondary' }
+    {$showButton}
+{/block}
