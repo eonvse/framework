@@ -11,10 +11,9 @@ $dotenv->load();
 
 $app = new Application(dirname(__DIR__));
 
-$router = new Router();
+$router = new Router($app);
 
-$router->get('/', [HomeController::class, 'index']);
-
-$router->get('/about', [HomeController::class, 'about']);
+// Подключаем маршруты
+require __DIR__ . '/../routes/web.php';
 
 $app->setRouter($router);
