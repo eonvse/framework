@@ -29,6 +29,14 @@ class Application
         $this->router = $router;
     }
 
+    public function getRouter(): Router
+    {
+        if (!$this->router) {
+            throw new \RuntimeException('Router has not been initialized');
+        }
+        return $this->router;
+    }
+
     public function run(): void
     {
         try {

@@ -15,7 +15,10 @@ abstract class Controller
     protected function render(string $view, array $data = []): void
     {
         try {
-            $latte = new LatteEngine($this->app->getViewsPath());
+            $latte = new LatteEngine(
+                $this->app->getViewsPath(),
+                $this->app
+            );
             // Убедимся, что $core передается
             $data['core'] = $latte;
             echo $latte->render("pages/{$view}.latte", $data);

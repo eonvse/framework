@@ -5,7 +5,7 @@ use App\Controllers\HomeController;
 use Core\Router;
 
 /** @var Router $router */
-$router->get('/', [HomeController::class, 'index']);
-$router->get('/about', [HomeController::class, 'about']);
+$router->get('/', [HomeController::class, 'index'], 'home');
+$router->get('/about', [HomeController::class, 'about'], 'about');
 
 // Другие маршруты...

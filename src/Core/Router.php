@@ -6,24 +6,50 @@ namespace Core;
 class Router
 {
     protected array $routes = [];
+    protected array $namedRoutes = [];
 
     public function __construct(
         protected Application $app
     ) {}
 
-    public function add(string $method, string $uri, callable|array $action): self
+    public function add(string $method, string $uri, callable|array $action, ?string $name = null): self
     {
-        $this->routes[] = [
+        $route = [
             'method' => strtoupper($method),
             'uri' => $uri,
             'action' => $action,
+            'name' => $name
         ];
+
+        $this->routes[] = $route;
+        if ($name) {
+            $this->namedRoutes[$name] = $route;
+        }
+
         return $this;
     }
 
-    public function get(string $uri, callable|array $action): self
+    public function route(string $name, array $params = []): string
     {
-        return $this->add('GET', $uri, $action);
+        if (!isset($this->namedRoutes[$name])) {
+            throw new \Exception("Route with name '{$name}' not found");
+        }
+
+        $route = $this->namedRoutes[$name];
+        $uri = $_ENV['APP_URL'] . $route['uri'];
+        
+        // Замена параметров {param} в URI
+        foreach ($params as $key => $value) {
+            $uri = str_replace('{'.$key.'}', (string)$value, $uri);
+        }
+        
+        return $uri;
+    }
+
+
+    public function get(string $uri, callable|array $action, ?string $name = null): self
+    {
+        return $this->add('GET', $uri, $action, $name);
     }
 
     public function post(string $uri, callable|array $action): self

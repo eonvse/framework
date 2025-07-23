@@ -9,7 +9,7 @@ class LatteEngine
 {
     private Engine $latte;
 
-    public function __construct(string $viewsPath)
+    public function __construct(string $viewsPath, Application $app)
     {
         $this->latte = new Engine();
         $this->latte->setTempDirectory(__DIR__ . '/../../storage/cache/latte');
@@ -30,6 +30,11 @@ class LatteEngine
         $this->latte->addFilter('ucfirst', 'ucfirst');
         $this->latte->addFilter('date', function($timestamp, $format = 'Y-m-d') {
             return date($format, is_numeric($timestamp) ? $timestamp : strtotime($timestamp));
+        });
+
+        $router = $app->getRouter();
+        $this->latte->addFilter('route', function(string $name, array $params = []) use ($router) {
+            return $router->route($name, $params);
         });
     }
 
