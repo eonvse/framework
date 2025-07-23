@@ -11,6 +11,9 @@ class Application
     ){
         $this->setupPaths();
         $this->router = $this->router ?? new Router($this);
+        //$this->loadEnvironment();
+        $this->initializeDatabase();
+
     }
 
     protected function setupPaths(): void
@@ -19,6 +22,22 @@ class Application
         define('STORAGE_PATH', $this->rootPath . '/storage');
     }
 
+    /*protected function loadEnvironment(): void
+    {
+        $dotenv = Dotenv\Dotenv::createImmutable($this->rootPath);
+        $dotenv->safeLoad();
+        $dotenv->required([
+            'DB_DRIVER',
+            'DB_HOST',
+            'DB_DATABASE',
+            'DB_USERNAME'
+        ]);
+    }*/
+    protected function initializeDatabase(): void
+    {
+        Database::getConnection(); // Инициализация подключения
+    }
+    
     public function getViewsPath(): string
     {
         return TEMPLATES_PATH;
@@ -61,7 +80,7 @@ class Application
         return preg_replace("#^{$publicPath}#", '', $uri) ?: '/';
     }
 
-        protected function normalizeUri(string $uri): string
+    protected function normalizeUri(string $uri): string
     {
         // Удаляем базовый путь из APP_URL
         $basePath = parse_url($_ENV['APP_URL'], PHP_URL_PATH) ?: '';
