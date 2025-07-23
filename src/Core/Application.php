@@ -3,6 +3,9 @@ declare(strict_types=1);
 
 namespace Core;
 
+use Core\Http\Response;
+use Core\Exceptions\HttpException;
+
 class Application
 {
     public function __construct(
@@ -37,7 +40,7 @@ class Application
     {
         Database::getConnection(); // Инициализация подключения
     }
-    
+
     public function getViewsPath(): string
     {
         return TEMPLATES_PATH;
@@ -66,10 +69,20 @@ class Application
                 throw new \Exception("Router not configured");
             }
 
-            echo $this->router->resolve($method, $uri);
-        } catch (\Exception $e) {
-            http_response_code($e->getCode());
-            echo "Error: " . $e->getMessage();
+            $response = $this->router->resolve($method, $uri);
+
+            // Обрабатываем Response и строки
+            if ($response instanceof Response) {
+                $response->send();
+            } elseif (is_scalar($response) || (is_object($response) && method_exists($response, '__toString'))) {
+                echo $response;
+            } else {
+                throw new \RuntimeException("Invalid response type");
+            }
+        } catch (HttpException $e) {
+            $e->getResponse()->send();
+        } catch (\Throwable $e) {
+            Response::error('Server Error: '.$e->getMessage().' '.$e->getFile().' '.$e->getLine(), 500)->getResponse()->send();
         }
     }
 

@@ -3,13 +3,16 @@ declare(strict_types=1);
 
 namespace Core;
 
+use Core\Http\Response;
+
 abstract class Controller
 {
-    protected Application $app;
+    protected Response $response;
 
-    public function __construct(Application $app)
+    public function __construct(protected Application $app)
     {
         $this->app = $app;
+        $this->response = new Response();
     }
     
     protected function render(string $view, array $data = []): void
@@ -33,10 +36,31 @@ abstract class Controller
         return $latte->render("components/{$name}.latte", $props);
     }
 
-    protected function json(array $data, int $status = 200): void
+    protected function json(array $data, int $status = 200): Response
     {
-        header('Content-Type: application/json');
-        http_response_code($status);
-        echo json_encode($data);
+        return $this->response
+            ->setStatusCode($status)
+            ->json($data);
     }
+
+    protected function redirect(string $url, int $status = 302): Response
+    {
+        return $this->response->redirect($url, $status);
+    }
+
+    protected function view(string $path, array $data = []): Response
+    {
+        $latte = new LatteEngine(
+            $this->app->getViewsPath(),
+            $this->app
+        );
+        
+        $data['core'] = $latte;
+        $content = $latte->render("pages/{$path}.latte", $data);
+        
+        return $this->response
+            ->header('Content-Type', 'text/html')
+            ->setContent($content);
+    }
+
 }
