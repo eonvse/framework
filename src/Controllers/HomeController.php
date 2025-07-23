@@ -9,7 +9,7 @@ class HomeController extends Controller
 {
     public function index(): void
     {
-        $this->render('home', [
+        $this->view('home', [
             'title' => 'Главная страница',
             'activePage' => 'home'
         ]);
@@ -18,7 +18,7 @@ class HomeController extends Controller
 
     public function about(): void
     {
-        $this->render('home', [
+        $this->view('home', [
             'title' => 'About',
             'activePage' => 'about'
         ]);

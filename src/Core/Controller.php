@@ -22,7 +22,7 @@ abstract class Controller
                 $this->app->getViewsPath(),
                 $this->app
             );
-            // Убедимся, что $core передается
+            
             $data['core'] = $latte;
             echo $latte->render("pages/{$view}.latte", $data);
         } catch (\Exception $e) {
@@ -48,7 +48,7 @@ abstract class Controller
         return $this->response->redirect($url, $status);
     }
 
-    protected function view(string $path, array $data = []): Response
+    protected function view(string $path, array $data = [])
     {
         $latte = new LatteEngine(
             $this->app->getViewsPath(),
@@ -58,9 +58,10 @@ abstract class Controller
         $data['core'] = $latte;
         $content = $latte->render("pages/{$path}.latte", $data);
         
-        return $this->response
+        $this->response
             ->header('Content-Type', 'text/html')
-            ->setContent($content);
+            ->setContent($content)
+            ->send();
     }
 
 }

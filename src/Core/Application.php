@@ -5,6 +5,7 @@ namespace Core;
 
 use Core\Http\Response;
 use Core\Exceptions\HttpException;
+use Dotenv\Dotenv;
 
 class Application
 {
@@ -14,7 +15,7 @@ class Application
     ){
         $this->setupPaths();
         $this->router = $this->router ?? new Router($this);
-        //$this->loadEnvironment();
+        $this->loadEnvironment();
         $this->initializeDatabase();
 
     }
@@ -24,21 +25,28 @@ class Application
         define('TEMPLATES_PATH', $this->rootPath . '/views');
         define('STORAGE_PATH', $this->rootPath . '/storage');
     }
-
-    /*protected function loadEnvironment(): void
+    protected function loadEnvironment(): void
     {
-        $dotenv = Dotenv\Dotenv::createImmutable($this->rootPath);
+        $dotenv = Dotenv::createImmutable($this->rootPath);
         $dotenv->safeLoad();
+        
+        // Обязательные переменные
         $dotenv->required([
             'DB_DRIVER',
             'DB_HOST',
-            'DB_DATABASE',
-            'DB_USERNAME'
+            'DB_DATABASE'
         ]);
-    }*/
+        
+        // Переменные с значениями по умолчанию
+        $_ENV['DB_PORT'] = $_ENV['DB_PORT'] ?? '3306';
+        $_ENV['DB_CHARSET'] = $_ENV['DB_CHARSET'] ?? 'utf8mb4';
+        $_ENV['DB_USERNAME'] = $_ENV['DB_USERNAME'] ?? 'root';
+        $_ENV['DB_PASSWORD'] = $_ENV['DB_PASSWORD'] ?? '';
+    }
+
     protected function initializeDatabase(): void
     {
-        Database::getConnection(); // Инициализация подключения
+        Database::getPdo(); // Инициализация подключения
     }
 
     public function getViewsPath(): string
@@ -105,6 +113,11 @@ class Application
         
         // Удаляем базовый путь APP_URL
         return preg_replace("#^{$basePath}#", '', $uri) ?: '/';
+    }
+
+    public function getDatabasePath(): string
+    {
+        return $this->rootPath . '/database';
     }
 
 }
