@@ -8,7 +8,7 @@ use Core\Database\Migrator;
 $app = new Application(dirname(__DIR__));
 $migrator = new Migrator($app);
 
-$command = $argv[1] ?? 'run';
+$command = $argv[1] ?? '';
 
 switch ($command) {
     case 'run':
